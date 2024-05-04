@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
+import Login from './Login';
 
 function Home() {
     
     return (
         <section>
-
+            <Login />
         </section>
     );
 }

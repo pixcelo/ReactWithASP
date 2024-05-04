@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 
 // コンポーネントの読み込み
+import Home from './components/Home.jsx';
 import ExampleBtnClick from './components/ExampleBtnClick.jsx';
 
 function App() {
@@ -36,9 +37,11 @@ function App() {
 
     return (
         <div>
-            <h1 id="tabelLabel">Weather forecast</h1>
+            {/* <h1 id="tabelLabel">Weather forecast</h1>
             <p>This component demonstrates fetching data from the server.</p>
-            {contents}
+            {contents} */}
+
+            <Home />
             <ExampleBtnClick />
         </div>
     );
