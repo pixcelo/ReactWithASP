@@ -1,5 +1,28 @@
 # React-With-ASP.NET
 
+
+GET `https://localhost:5173/api/test`
+
+```js
+server: {
+        proxy: {
+            '^/weatherforecast': {
+                target,
+                secure: false
+            },
+            '^/api/test': {
+                target,
+                secure: false
+            },
+        },
+        port: 5173,
+        https: {
+            key: fs.readFileSync(keyFilePath),
+            cert: fs.readFileSync(certFilePath),
+        }
+    }
+```
+
 ## Reference
 - [チュートリアル: Visual Studio での React を使用した ASP.NET Core アプリの作成](https://learn.microsoft.com/ja-jp/visualstudio/javascript/tutorial-asp-net-core-with-react?view=vs-2022)
 - [ASP.NET Core でのシングルページ アプリケーション (SPA) の概要](https://learn.microsoft.com/ja-jp/aspnet/core/client-side/spa/intro?view=aspnetcore-8.0#developing-single-page-apps)
