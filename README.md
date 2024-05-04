@@ -10,10 +10,10 @@ server: {
                 target,
                 secure: false
             },
-            '^/api/test': {
-                target,
-                secure: false
-            },
+            // '^/api/test': {
+            //     target,
+            //     secure: false
+            // },
         },
         port: 5173,
         https: {

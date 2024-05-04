@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
+// コンポーネントの読み込み
+import ExampleBtnClick from './components/ExampleBtnClick.jsx';
+
 function App() {
     const [forecasts, setForecasts] = useState();
 
@@ -36,6 +39,7 @@ function App() {
             <h1 id="tabelLabel">Weather forecast</h1>
             <p>This component demonstrates fetching data from the server.</p>
             {contents}
+            <ExampleBtnClick />
         </div>
     );
     
