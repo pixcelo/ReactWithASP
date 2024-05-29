@@ -1,10 +1,27 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+async function fetchTestAPI() {
+  try {
+    const baseUrl: string = "https://localhost:7148"
+    const endpoint: string = "/weatherforecast";
+    const url: string = `${baseUrl}${endpoint}`;
+    const response = await fetch(url);
+    const data = await response.json(response);
+    console.log(data);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    fetchTestAPI();
+  });
 
   return (
     <>
