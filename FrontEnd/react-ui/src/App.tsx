@@ -3,25 +3,34 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-async function fetchTestAPI() {
-  try {
-    const baseUrl: string = "https://localhost:7148"
-    const endpoint: string = "/weatherforecast";
-    const url: string = `${baseUrl}${endpoint}`;
-    const response = await fetch(url);
-    const data = await response.json(response);
-    console.log(data);
-  } catch (err) {
-    console.log(err);
-  }
+interface ApiData {
+  date: string,
+  temperatureC: string,
+  temperatureF: number,
+  summary: string
 }
 
 function App() {
   const [count, setCount] = useState(0);
+  const [apiData, setApiData] = useState<ApiData[]>([]);
+
+  async function fetchTestAPI() {
+    try {
+      const baseUrl: string = "https://localhost:7148"
+      const endpoint: string = "/weatherforecast";
+      const url: string = `${baseUrl}${endpoint}`;
+      const response = await fetch(url);
+      const data = await response.json(response);
+      // console.log(data);
+      setApiData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
     fetchTestAPI();
-  });
+  }, []); // 空の依存配列を渡して、一度だけ実行されるようにする
 
   return (
     <>
@@ -38,13 +47,21 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      
+      {apiData.length > 0 && (
+        <div className="weather-data">
+          <h2>Weather Forecast</h2>
+          {apiData.map((weather, index) => (
+            <div key={index}>
+              <p>Date: {weather.date}</p>
+              <p>TemperatureC: {weather.temperatureC}°C</p>
+              <p>TemperatureF: {weather.temperatureF}°F</p>
+              <p>Summary: {weather.summary}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </>
   )
 }
