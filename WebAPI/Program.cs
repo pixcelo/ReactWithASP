@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using WebAPI.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,6 +19,10 @@ builder.Services.AddCors(opsions =>
             policy.WithOrigins("http://localhost:5173");
         });
 });
+
+// データベース設定
+builder.Services.AddDbContext<TodoContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
