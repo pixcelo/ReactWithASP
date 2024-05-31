@@ -27,7 +27,7 @@ namespace WebAPI.Repositories.Interfaces
 
         public void Save(Todo todo)
         {
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
 
             using (var connection = new SqlConnection(connectionString))
             using (var command = connection.CreateCommand())
