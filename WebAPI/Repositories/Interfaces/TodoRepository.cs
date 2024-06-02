@@ -88,12 +88,24 @@ namespace WebAPI.Repositories.Interfaces
                         if (reader.Read())
                         {
                             var key = (int)reader["Id"];
+                            var title = reader["Title"] as string;
                             var description = reader["Description"] as string;
+                            var priority = reader["Priority"] as int?;
+                            var dueDate = reader["DueDate"] as DateTime?;
+                            var completedAt = reader["CompletedAt"] as DateTime?;
+                            var isCompleted = reader["IsCompleted"] as int?;
+                            var projectId = reader["ProjectId"] as int?;
 
                             return new Todo()
                             {
                                 Id = key,
-                                Description = description
+                                Title = title,
+                                Description = description,
+                                Priority = priority,
+                                DueDate = dueDate,
+                                CompletedAt = completedAt,
+                                IsCompleted = isCompleted,
+                                ProjectId = projectId
                             };
                         }
                         else
@@ -128,12 +140,24 @@ namespace WebAPI.Repositories.Interfaces
                         while (reader.Read())
                         {
                             var id = (int)reader["Id"];
+                            var title = reader["Title"] as string;
                             var description = reader["Description"] as string;
+                            var priority = reader["Priority"] as int?;
+                            var dueDate = reader["DueDate"] as DateTime?;
+                            var completedAt = reader["CompletedAt"] as DateTime?;
+                            var isCompleted = reader["IsCompleted"] as int?;
+                            var projectId = reader["ProjectId"] as int?;
 
                             todos.Add(new Todo()
                             {
                                 Id = id,
-                                Description = description
+                                Title = title,
+                                Description = description,
+                                Priority = priority,
+                                DueDate = dueDate,
+                                CompletedAt = completedAt,
+                                IsCompleted = isCompleted,
+                                ProjectId = projectId
                             });
                         }
 

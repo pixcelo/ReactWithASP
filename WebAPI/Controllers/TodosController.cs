@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
                     return StatusCode(StatusCodes.Status404NotFound, $"Todo with ID {id} not found.");
                 }
 
-                return Ok(todo);                
+                return Ok(todo);
             }
             catch (Exception ex)
             {
