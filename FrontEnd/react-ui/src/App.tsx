@@ -1,95 +1,35 @@
 import { useEffect, useState } from 'react'
+import TodoList from './components/TodoList';
+import WeatherForecast from './components/WeatherForecast';
+import { WeatherForecastData, Todo } from './types';
+import fetchData from './utils/fetchData';
 import './App.css'
 
-interface ApiData {
-  date: string,
-  temperatureC: string,
-  temperatureF: number,
-  summary: string
-}
-
-interface Todo {
-  id: number,
-  title: string | null,
-  description: string | null,
-  priority: number | null,
-  dueDate: string | null,
-  createdAt: string,
-  completedAt: string | null,
-  isCompleted: number | null,
-  projectId: number| null
-}
-
-function App() {
-  const [count, setCount] = useState(0);
-  const [apiData, setApiData] = useState<ApiData[]>([]);
+function App() {  
+  const [weatherForecastData, setApiData] = useState<WeatherForecastData[]>([]);
   const [todos, setTodos] = useState<Todo[]>([]);
-
-  async function fetchTestAPI() {
-    try {
-      const baseUrl: string = "https://localhost:7148"
-      const endpoint: string = "/weatherforecast";
-      const url: string = `${baseUrl}${endpoint}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      // console.log(data);
-      setApiData(data);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function fetchApi(url: string) {
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      setTodos(data);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchTestAPI();
-    fetchApi("https://localhost:7148/api/todos");
+    const fetchWeatherForecast = async() => {
+      const data = await fetchData<WeatherForecastData[]>("https://localhost:7148/weatherforecast");
+      setApiData(data);
+    }
+
+    const fetchTodos = async () => {
+      const data = await fetchData<Todo[]>('https://localhost:7148/api/todos');
+      setTodos(data);
+      setIsLoading(false);
+    };
+
+    fetchWeatherForecast();
+    fetchTodos();
   }, []); // 空の依存配列を渡して、一度だけ実行されるようにする
 
   return (
     <>      
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-
-      {todos.length > 0 && (
-        <div className="todo-data">
-          <h2>Todo</h2>
-          {todos.map((todo, index) => (
-            <div key={index}>
-              <p>Date: {todo.duedate}</p>
-              <p>title: {todo.title}</p>
-              <p>description: {todo.description}</p>
-              {/* <p>IsCompleted: {todo.IsCompleted}</p> */}
-            </div>
-          ))}
-        </div>
-      )}
-      
-      {apiData.length > 0 && (
-        <div className="weather-data">
-          <h2>Weather Forecast</h2>
-          {apiData.map((weather, index) => (
-            <div key={index}>
-              <p>Date: {weather.date}</p>
-              <p>TemperatureC: {weather.temperatureC}°C</p>
-              <p>TemperatureF: {weather.temperatureF}°F</p>
-              <p>Summary: {weather.summary}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      <TodoList todos={todos} isLoading={isLoading} />
+      <WeatherForecast data={weatherForecastData} isLoading={isLoading} />
     </>
   )
 }
