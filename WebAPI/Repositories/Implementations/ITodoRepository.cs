@@ -4,8 +4,9 @@ namespace WebAPI.Repositories.Implementations
 {
     public interface ITodoRepository
     {
-        void Save(Todo history);
-        void Delete(Todo history);
-        Todo Find(int id);
+        void Save(Todo todo);
+        void Delete(int id);
+        Todo? Find(int id);
+        List<Todo> FindAll();
     }
 }

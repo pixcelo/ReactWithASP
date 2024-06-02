@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
+using WebAPI.Repositories.Implementations;
 
 namespace WebAPI.Controllers
 {
@@ -13,32 +8,46 @@ namespace WebAPI.Controllers
     [ApiController]
     public class TodosController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly ITodoRepository todoRepository;
 
-        public TodosController(TodoContext context)
+        public TodosController(ITodoRepository todoRepository)
         {
-            _context = context;
+            this.todoRepository = todoRepository;
         }
 
         // GET: api/Todos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Todo>>> GetTodos()
         {
-            return await _context.Todos.ToListAsync();
+            try
+            {
+                List<Todo> todos = this.todoRepository.FindAll();
+                return Ok(todos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         // GET: api/Todos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Todo>> GetTodo(int id)
         {
-            var todo = await _context.Todos.FindAsync(id);
-
-            if (todo == null)
+            try
             {
-                return NotFound();
-            }
+                Todo? todo = this.todoRepository.Find(id);
+                if (todo == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, $"Todo with ID {id} not found.");
+                }
 
-            return todo;
+                return Ok(todo);                
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         // PUT: api/Todos/5
@@ -46,30 +55,7 @@ namespace WebAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodo(int id, Todo todo)
         {
-            if (id != todo.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(todo).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Todos
@@ -77,31 +63,30 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Todo>> PostTodo(Todo todo)
         {
-            _context.Todos.Add(todo);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTodo", new { id = todo.Id }, todo);
+            try
+            {
+                this.todoRepository.Save(todo);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         // DELETE: api/Todos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTodo(int id)
         {
-            var todo = await _context.Todos.FindAsync(id);
-            if (todo == null)
+            try
             {
-                return NotFound();
+                this.todoRepository.Delete(id);
+                return Ok();
             }
-
-            _context.Todos.Remove(todo);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool TodoExists(int id)
-        {
-            return _context.Todos.Any(e => e.Id == id);
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }
