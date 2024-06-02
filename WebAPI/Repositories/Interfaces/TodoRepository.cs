@@ -21,20 +21,25 @@ namespace WebAPI.Repositories.Interfaces
             {
                 string? connectionString = _configuration.GetConnectionString("DefaultConnection");
 
-                using (var connection = new SqlConnection(connectionString))                
+                using (var connection = new SqlConnection(connectionString))
                 using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.CommandText = @"
                         INSERT INTO 
-                        todos (title, description, createdAt)
-                        VALUES  (@title, @description, @createdAt)
+                        todos (title, description, priority, dueDate, createdAt, completedAt, isCompleted, projectId)
+                        VALUES (@title, @description, @priority, @dueDate, @createdAt, @completedAt, @isCompleted, @projectId)
                     ";
 
                     command.Parameters.AddWithValue("@title", todo.Title);
                     command.Parameters.AddWithValue("@description", todo.Description);
+                    command.Parameters.AddWithValue("@priority", todo.Priority);
+                    command.Parameters.AddWithValue("@dueDate", todo.DueDate);
                     command.Parameters.AddWithValue("@createdAt", todo.CreatedAt);
-                    command.ExecuteNonQuery();                    
+                    command.Parameters.AddWithValue("@completedAt", todo.CompletedAt);
+                    command.Parameters.AddWithValue("@isCompleted", todo.IsCompleted);
+                    command.Parameters.AddWithValue("@projectId", todo.ProjectId);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
